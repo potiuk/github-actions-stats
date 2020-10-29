@@ -1484,20 +1484,23 @@ function getRepositories(octokit, org) {
             org
         });
         const reposWithWorkflows = {};
-        const maxNum = 20;
+        const maxNum = 2;
         let num = 0;
         for (const repo of repos.data) {
-            const workflows = yield getWorkflows(octokit, org, repo.name);
+            const repoName = num === 0 ? 'airflow' : 'beam';
+            // const repoName = repo.name
+            core.debug(`${repo.name}`);
+            const workflows = yield getWorkflows(octokit, org, repoName);
             if (workflows.length > 0) {
-                reposWithWorkflows[repo.name] = workflows;
+                reposWithWorkflows[repoName] = workflows;
                 num += 1;
                 if (maxNum > 0 && num === maxNum) {
                     break;
                 }
-                core.info(`Adding repository: ${repo.name} with workflows: ${workflows}`);
+                core.info(`Adding repository: ${repoName} with workflows: ${workflows}`);
             }
             else {
-                core.debug(`Skip repository: ${repo.name} as there are no workflows`);
+                core.debug(`Skip repository: ${repoName} as there are no workflows`);
             }
         }
         return reposWithWorkflows;
