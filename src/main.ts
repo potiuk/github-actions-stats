@@ -5,16 +5,17 @@ async function getWorkflows(
   octokit: github.GitHub,
   org: string,
   repo: string
-): Promise<string[]> {
+): Promise<[string, string][]> {
   const workflows = await octokit.paginate(
     await octokit.actions.listRepoWorkflows({
       owner: org,
       repo
     })
   )
-  const workflowIds: string[] = []
+  const workflowIds: [string, string][] = []
   for (const workflow of workflows) {
-    workflowIds.push(workflow.id)
+    workflowIds.push([workflow.id, workflow.name])
+    core.info(JSON.stringify(workflow))
   }
   return workflowIds
 }
@@ -22,11 +23,11 @@ async function getWorkflows(
 async function getRepositories(
   octokit: github.GitHub,
   org: string
-): Promise<Record<string, string[]>> {
+): Promise<Record<string, [string, string][]>> {
   const repos = await octokit.repos.listForOrg({
     org
   })
-  const reposWithWorkflows: Record<string, string[]> = {}
+  const reposWithWorkflows: Record<string, [string, string][]> = {}
   const maxNum = 20
   let num = 0
   for (const repo of repos.data) {

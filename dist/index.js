@@ -1466,7 +1466,8 @@ function getWorkflows(octokit, org, repo) {
         }));
         const workflowIds = [];
         for (const workflow of workflows) {
-            workflowIds.push(workflow.id);
+            workflowIds.push([workflow.id, workflow.name]);
+            core.info(JSON.stringify(workflow));
         }
         return workflowIds;
     });
