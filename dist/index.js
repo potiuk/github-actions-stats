@@ -1473,8 +1473,7 @@ function getWorkflows(octokit, org, repo) {
                 workflow_id: workflow.id
             });
             workflowIds.push([workflow.id, workflow.name]);
-            core.info(JSON.stringify(workflow));
-            core.info(JSON.stringify(timing));
+            core.info(`Workflow ID: ${workflow.id}, Name: ${workflow.name}, Timing: ${JSON.stringify(timing.data)}`);
         }
         return workflowIds;
     });
@@ -1498,7 +1497,7 @@ function getRepositories(octokit, org) {
                 core.info(`Adding repository: ${repo.name} with workflows: ${workflows}`);
             }
             else {
-                core.info(`Skip repository: ${repo.name} as there are no workflows`);
+                core.debug(`Skip repository: ${repo.name} as there are no workflows`);
             }
         }
         return reposWithWorkflows;
