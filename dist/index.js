@@ -1458,23 +1458,42 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const github = __importStar(__webpack_require__(469));
 const core = __importStar(__webpack_require__(393));
+function getWorkflows(octokit, org, repo) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const workflows = yield octokit.paginate(yield octokit.actions.listRepoWorkflows({
+            owner: org,
+            repo
+        }));
+        const workflowIds = [];
+        for (const workflow of workflows) {
+            workflowIds.push(workflow.id);
+        }
+        return workflowIds;
+    });
+}
 function getRepositories(octokit, org) {
     return __awaiter(this, void 0, void 0, function* () {
         const repos = yield octokit.repos.listForOrg({
             org
         });
-        const repoNames = [];
+        const reposWithWorkflows = {};
         const maxNum = 20;
         let num = 0;
         for (const repo of repos.data) {
-            core.info(`Repository: ${repo.name}`);
-            repoNames.push(repo.name);
-            num += 1;
-            if (maxNum > 0 && num === maxNum) {
-                break;
+            const workflows = yield getWorkflows(octokit, org, repo.name);
+            if (workflows.length > 0) {
+                reposWithWorkflows[repo.name] = workflows;
+                num += 1;
+                if (maxNum > 0 && num === maxNum) {
+                    break;
+                }
+                core.info(`Adding repository: ${repo.name} with workflows: ${workflows}`);
+            }
+            else {
+                core.info(`Skip repository: ${repo.name} as there are no workflows`);
             }
         }
-        return repoNames;
+        return reposWithWorkflows;
     });
 }
 function verboseOutput(name, value) {

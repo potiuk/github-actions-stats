@@ -1,25 +1,48 @@
 import * as github from '@actions/github'
 import * as core from '@actions/core'
 
+async function getWorkflows(
+  octokit: github.GitHub,
+  org: string,
+  repo: string
+): Promise<string[]> {
+  const workflows = await octokit.paginate(
+    await octokit.actions.listRepoWorkflows({
+      owner: org,
+      repo
+    })
+  )
+  const workflowIds: string[] = []
+  for (const workflow of workflows) {
+    workflowIds.push(workflow.id)
+  }
+  return workflowIds
+}
+
 async function getRepositories(
   octokit: github.GitHub,
   org: string
-): Promise<string[]> {
+): Promise<Record<string, string[]>> {
   const repos = await octokit.repos.listForOrg({
     org
   })
-  const repoNames: string[] = []
+  const reposWithWorkflows: Record<string, string[]> = {}
   const maxNum = 20
   let num = 0
   for (const repo of repos.data) {
-    core.info(`Repository: ${repo.name}`)
-    repoNames.push(repo.name)
-    num += 1
-    if (maxNum > 0 && num === maxNum) {
-      break
+    const workflows = await getWorkflows(octokit, org, repo.name)
+    if (workflows.length > 0) {
+      reposWithWorkflows[repo.name] = workflows
+      num += 1
+      if (maxNum > 0 && num === maxNum) {
+        break
+      }
+      core.info(`Adding repository: ${repo.name} with workflows: ${workflows}`)
+    } else {
+      core.info(`Skip repository: ${repo.name} as there are no workflows`)
     }
   }
-  return repoNames
+  return reposWithWorkflows
 }
 
 function verboseOutput(name: string, value: string): void {
