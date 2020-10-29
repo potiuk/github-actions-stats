@@ -11,9 +11,15 @@ async function getRepositories(
     })
   )
   const repoNames: string[] = []
+  const maxNum = 5
+  let num = 0
   for (const repo of repos) {
-    core.info(`Repository: ${repo}`)
+    core.info(`Repository: ${repo.name}`)
     repoNames.push(repo.name)
+    num += 1
+    if (maxNum > 0 && num === maxNum) {
+      break
+    }
   }
   return repoNames
 }
