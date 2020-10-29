@@ -14,8 +14,18 @@ async function getWorkflows(
   )
   const workflowIds: [string, string][] = []
   for (const workflow of workflows) {
+    const timing = await octokit.request(
+      'GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/timing',
+      {
+        owner: org,
+        repo,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        workflow_id: workflow.id
+      }
+    )
     workflowIds.push([workflow.id, workflow.name])
     core.info(JSON.stringify(workflow))
+    core.info(JSON.stringify(timing))
   }
   return workflowIds
 }
