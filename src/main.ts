@@ -11,7 +11,7 @@ async function getRepositories(
   const repoNames: string[] = []
   const maxNum = 20
   let num = 0
-  for (const repo of repos) {
+  for (const repo of repos.data) {
     core.info(`Repository: ${repo.name}`)
     repoNames.push(repo.name)
     num += 1
