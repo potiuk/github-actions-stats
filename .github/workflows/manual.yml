@@ -1,0 +1,11 @@
+name: "Manual action"
+on:
+  workflow_dispatch:
+jobs:
+  get_stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Retrieve stats"
+        uses: potiuk/github-actions-stats@main
+        with:
+          owner: 'apache'

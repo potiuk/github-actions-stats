@@ -1,0 +1,17 @@
+name: 'Get Workflow Origin'
+description: 'Gets origin og Workflow Runs.'
+author: 'potiuk'
+inputs:
+  token:
+    description: The GITHUB_TOKEN secret of the repository
+    required: true
+  oranization:
+    description: |
+      Organization to read the stats from.
+    required: true
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+branding:
+  icon: 'thermometer'
+  color: 'green'
