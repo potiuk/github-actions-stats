@@ -1460,11 +1460,11 @@ const github = __importStar(__webpack_require__(469));
 const core = __importStar(__webpack_require__(393));
 function getRepositories(octokit, org) {
     return __awaiter(this, void 0, void 0, function* () {
-        const repos = yield octokit.paginate(yield octokit.repos.listForOrg({
+        const repos = yield octokit.repos.listForOrg({
             org
-        }));
+        });
         const repoNames = [];
-        const maxNum = 5;
+        const maxNum = 20;
         let num = 0;
         for (const repo of repos) {
             core.info(`Repository: ${repo.name}`);

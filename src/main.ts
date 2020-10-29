@@ -5,13 +5,11 @@ async function getRepositories(
   octokit: github.GitHub,
   org: string
 ): Promise<string[]> {
-  const repos = await octokit.paginate(
-    await octokit.repos.listForOrg({
-      org
-    })
-  )
+  const repos = await octokit.repos.listForOrg({
+    org
+  })
   const repoNames: string[] = []
-  const maxNum = 5
+  const maxNum = 20
   let num = 0
   for (const repo of repos) {
     core.info(`Repository: ${repo.name}`)
