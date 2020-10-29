@@ -1458,10 +1458,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const github = __importStar(__webpack_require__(469));
 const core = __importStar(__webpack_require__(393));
-function getRepositories(octokit, owner) {
+function getRepositories(octokit, org) {
     return __awaiter(this, void 0, void 0, function* () {
-        const repos = yield octokit.paginate(yield octokit.repos.list({
-            affiliation: owner
+        const repos = yield octokit.paginate(yield octokit.repos.listForOrg({
+            org
         }));
         const repoNames = [];
         for (const repo of repos) {
@@ -1479,8 +1479,9 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const token = core.getInput('token', { required: true });
         const octokit = new github.GitHub(token);
-        const owner = core.getInput('owner', { required: true });
-        const repoNames = yield getRepositories(octokit, owner);
+        const org = core.getInput('org', { required: true });
+        core.info(`Retrieving repositories for ${org}`);
+        const repoNames = yield getRepositories(octokit, org);
         verboseOutput('repoNames', JSON.stringify(repoNames));
     });
 }

@@ -9,4 +9,4 @@ jobs:
         uses: potiuk/github-actions-stats@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          owner: 'potiuk'
+          org: 'apache'

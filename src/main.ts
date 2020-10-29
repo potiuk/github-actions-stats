@@ -3,11 +3,11 @@ import * as core from '@actions/core'
 
 async function getRepositories(
   octokit: github.GitHub,
-  owner: string
+  org: string
 ): Promise<string[]> {
   const repos = await octokit.paginate(
-    await octokit.repos.list({
-      affiliation: owner
+    await octokit.repos.listForOrg({
+      org
     })
   )
   const repoNames: string[] = []
@@ -26,9 +26,10 @@ function verboseOutput(name: string, value: string): void {
 async function run(): Promise<void> {
   const token = core.getInput('token', {required: true})
   const octokit = new github.GitHub(token)
-  const owner = core.getInput('owner', {required: true})
+  const org = core.getInput('org', {required: true})
 
-  const repoNames = await getRepositories(octokit, owner)
+  core.info(`Retrieving repositories for ${org}`)
+  const repoNames = await getRepositories(octokit, org)
   verboseOutput('repoNames', JSON.stringify(repoNames))
 }
 

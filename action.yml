@@ -5,7 +5,7 @@ inputs:
   token:
     description: The GITHUB_TOKEN secret of the repository
     required: true
-  oranization:
+  org:
     description: |
       Organization to read the stats from.
     required: true
