@@ -8,4 +8,5 @@ jobs:
       - name: "Retrieve stats"
         uses: potiuk/github-actions-stats@main
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           owner: 'apache'
